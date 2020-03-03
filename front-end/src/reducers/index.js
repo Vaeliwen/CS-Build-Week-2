@@ -9,20 +9,44 @@ import {
     FETCH_LOCATION_SUCCESS,
     UPDATE_MAP,
     UPDATE_MAP_SUCCESS,
-    UPDATE_FAILURE
+    UPDATE_FAILURE,
+    TAKE_ITEM,
+    TAKE_ITEM_SUCCESS,
+    TAKE_ITEM_FAILURE,
+    SELL_ITEMS,
+    SELL_ITEMS_SUCCESS,
+    SELL_ITEMS_FAILURE,
+    DROP_ITEM,
+    DROP_ITEM_SUCCESS,
+    DROP_ITEM_FAILURE,
+    PRAY,
+    PRAY_SUCCESS,
+    PRAY_FAILURE
 } from '../actions/'
 
+let map = new Array(150)
+
+for(let i = 0; i < 150; i++){
+    map[i] = new Array(150)
+}
 const initialState = {
-    map: {},
+    map: JSON.parse(localStorage.getItem("map")),
+    twodee: JSON.parse(localStorage.getItem("twodee")),
     err: '',
+    shop_id: 1,
     isFetching: false,
     isMoving: false,
     isUpdating: false,
+    isTaking: false,
+    isSelling: false,
+    isPraying: false,
     location: {
         room_id: 0,
         title: "A Dark Room",
         description: "You cannot see anything.",
-        coordinates: "(60,60)",
+        coordinates: [],
+        players: [],
+        items: [],
         exits: ["n", "s", "e", "w"],
         messages: []
     },
@@ -54,8 +78,10 @@ export function reducer(state = initialState, action){
                     room_id: action.payload.room_id,
                     title: action.payload.title,
                     description: action.payload.description,
-                    coordinates: action.payload.coordinates,
+                    coordinates: [action.payload.coordinates[0],action.payload.coordinates[1]],
                     exits: action.payload.exits,
+                    items: action.payload.items,
+                    players: action.payload.players,
                     messages: action.payload.messages
                 }
             }
@@ -101,8 +127,10 @@ export function reducer(state = initialState, action){
                     room_id: action.payload.room_id,
                     title: action.payload.title,
                     description: action.payload.description,
-                    coordinates: action.payload.coordinates,
+                    coordinates: [action.payload.coordinates[1],action.payload.coordinates[3]],
                     exits: action.payload.exits,
+                    items: action.payload.items,
+                    players: action.payload.players,
                     messages: action.payload.messages
                 }
             }
@@ -119,20 +147,25 @@ export function reducer(state = initialState, action){
                 err: ''
             }
         case UPDATE_MAP_SUCCESS:
-            const id = action.payload.room_id
+            let splitStrings = action.payload.coordinates.split(',')
+            let coords = [splitStrings[0].slice(1), splitStrings[1].slice(0, splitStrings[1].length -1)]
             return {
                 ...state,
                 isUpdating: false,
                 map: {
                     ...state.map,
-                    [id]: {
+                    [action.payload.room_id]: {
                         room_id: action.payload.room_id,
                         title: action.payload.title,
                         description: action.payload.description,
-                        coordinates: action.payload.coordinates,
+                        coordinates: coords,
                         exits: action.payload.exits
                     }
-                }
+                },
+                twodee: [
+                    ...state.twodee,
+                    state.twodee[coords[1]][coords[0]] = action.payload.room_id
+                ]
             }
         case UPDATE_FAILURE:
             return {
@@ -140,7 +173,119 @@ export function reducer(state = initialState, action){
                 isUpdating: false,
                 err: action.payload
             }
+        case TAKE_ITEM:
+            return {
+                ...state,
+                isTaking: true,
+                err: ''
+            }
+        case TAKE_ITEM_SUCCESS:
+            return {
+                ...state,
+                isTaking: false,
+                location: {
+                    ...state.location,
+                    room_id: action.payload.room_id,
+                    title: action.payload.title,
+                    description: action.payload.description,
+                    coordinates: action.payload.coordinates,
+                    exits: action.payload.exits,
+                    items: action.payload.items,
+                    players: action.payload.players,
+                    messages: action.payload.messages
+                }
+            }
+        case TAKE_ITEM_FAILURE:
+            return {
+                ...state,
+                isTaking: false,
+                err: action.payload
+            }
+        case SELL_ITEMS:
+            return {
+                ...state,
+                isSelling: true,
+                err: ''
+            }
+        case SELL_ITEMS_SUCCESS:
+            return {
+                ...state,
+                isSelling: false,
+                location: {
+                    ...state.location,
+                    room_id: action.payload.room_id,
+                    title: action.payload.title,
+                    description: action.payload.description,
+                    coordinates: [action.payload.coordinates[1],action.payload.coordinates[3]],
+                    exits: action.payload.exits,
+                    items: action.payload.items,
+                    players: action.payload.players,
+                    messages: action.payload.messages
+                }
+            }
+        case SELL_ITEMS_FAILURE:
+            return {
+                ...state,
+                isSelling: false,
+                err: action.payload
+            }
+        case DROP_ITEM:
+            return {
+                ...state,
+                isTaking: true,
+                err: ''
+            }
+        case DROP_ITEM_SUCCESS:
+            return {
+                ...state,
+                isTaking: false,
+                location: {
+                    ...state.location,
+                    room_id: action.payload.room_id,
+                    title: action.payload.title,
+                    description: action.payload.description,
+                    coordinates: [action.payload.coordinates[1],action.payload.coordinates[3]],
+                    exits: action.payload.exits,
+                    items: action.payload.items,
+                    players: action.payload.players,
+                    messages: action.payload.messages
+                }
+            }
+        case DROP_ITEM_FAILURE:
+            return {
+                ...state,
+                isTaking: false,
+                err: action.payload
+            }            
         default:
             return state
+        case PRAY:
+            return {
+                ...state,
+                isPraying: true,
+                err: ''
+            }
+        case PRAY_SUCCESS:
+            return {
+                ...state,
+                isPraying: false,
+                location: {
+                    ...state.location,
+                    room_id: action.payload.room_id,
+                    title: action.payload.title,
+                    description: action.payload.description,
+                    coordinates: [action.payload.coordinates[1],action.payload.coordinates[3]],
+                    exits: action.payload.exits,
+                    items: action.payload.items,
+                    players: action.payload.players,
+                    messages: action.payload.messages
+                }
+            }
+        case PRAY_FAILURE:
+            return {
+                ...state,
+                isPraying: false,
+                err: action.payload
+            }
     }
 }

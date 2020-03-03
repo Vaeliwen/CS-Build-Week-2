@@ -23,9 +23,13 @@ const Player = (props) => {
             <div />
             <p>Location: {props.location.title} ID: {props.location.room_id}</p>
             <p>Description: {props.location.description}</p>
-            <p>Items: {props.location.items}</p>
+            <p>Items: {props.location.items.map(item => (
+                <span>{item}</span>
+            ))}</p>
             <p>Exits: {props.location.exits}</p>
-            <p>{props.location.messages}</p>
+            <p>Players: {props.location.players.map(player => (
+                <span>{player}</span>
+            ))}</p>
             <h3>Messages</h3>
             {props.location.messages.map(message => (
                 <p>{message}</p>))}

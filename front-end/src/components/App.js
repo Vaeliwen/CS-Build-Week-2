@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import Player from './player'
-import MoveButtons from './movebuttons'
+import Buttons from './buttons'
 
 class App extends Component {
     render() {
         return (
             <div>
                 <Player />
-                <MoveButtons />
+                <Buttons />
             </div>
         )
     }
