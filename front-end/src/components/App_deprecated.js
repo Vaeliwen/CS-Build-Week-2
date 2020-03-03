@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
-import Player from './components/player.js'
-import MoveButton from './components/move-button';
+import Player from './player.js'
+import MoveButton from './move-button';
 
 function App() {
   const [player, setPlayer] = useState({})
-  const [location, setLocation] = useState({})
+  const [location, setLocation] = useState({'room_id': '', 'exits': [], 'messages': []})
   const [map, setMap] = useState(JSON.parse(localStorage.getItem("map")))
   let config = {
     'Content-Type': 'Application/JSON'
@@ -34,13 +34,15 @@ function App() {
       .catch(err => console.log(err))       
   }, [])
 
+  
+
   return (
     <div>
       <Player player={player} location={location} />
-      <MoveButton direction="North" trigger="n" />
-      <MoveButton direction="South" trigger="s" />
-      <MoveButton direction="East" trigger="e" />
-      <MoveButton direction="West" trigger="w" />
+      <MoveButton direction="North" />
+      <MoveButton direction="South" />
+      <MoveButton direction="East"/>
+      <MoveButton direction="West" />
 
     </div>
   )
