@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux'
 import { move, updateMap, takeItem, sellItem, moveSmarter, dropItem, pray } from '../actions'
+import Row from './Row'
 
 function Buttons(props) {
 
     const [loot, setLoot] = useState('')
     const [predict, setPredict] = useState('0')
+    const [map, setMap] = useState([])
 
     const handleNorth = (e) => {
         e.preventDefault()
@@ -52,13 +54,14 @@ function Buttons(props) {
         props.updateMap()
         localStorage.setItem("map", JSON.stringify(props.map))
         localStorage.setItem("twodee", JSON.stringify(props.twodee))
-    }
+        setMap(props.twodee.slice().reverse())
+        }
 
     const yoink = (e) => {
         e.preventDefault()
         props.takeItem(loot)
     }
-    
+
     const lootNamer = (e) => {
         e.preventDefault()
         setLoot(e.target.value)
@@ -83,6 +86,12 @@ function Buttons(props) {
         props.pray()
     }
 
+    let rowStyle = {
+        topMargin: '0px',
+        bottomMargin: '0px'
+    }
+
+
     return (
         <div>
             <button onClick={handleNorth}>North</button>
@@ -103,6 +112,19 @@ function Buttons(props) {
             <button onClick={kaching}>Ka-Ching!</button>
             <input onChange={lootNamer} value={loot} type="text" />
             <input onChange={predictor} value={predict} type="text" />
+            <br />
+            <p>
+                {map.map(row => {
+                    if(row !== null){
+                        return(
+                        <Row data={row} style={rowStyle} />
+                        )
+                    }
+                    else {
+                        return null
+                    }
+                })}
+            </p>
         </div>
     )
 

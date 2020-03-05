@@ -31,6 +31,7 @@ for(let i = 0; i < 150; i++){
 }
 const initialState = {
     map: JSON.parse(localStorage.getItem("map")),
+    // twodee: map,
     twodee: JSON.parse(localStorage.getItem("twodee")),
     err: '',
     shop_id: 1,
@@ -149,7 +150,7 @@ export function reducer(state = initialState, action){
         case UPDATE_MAP_SUCCESS:
             let splitStrings = action.payload.coordinates.split(',')
             let coords = [splitStrings[0].slice(1), splitStrings[1].slice(0, splitStrings[1].length -1)]
-            return {
+            let newState = {
                 ...state,
                 isUpdating: false,
                 map: {
@@ -163,10 +164,11 @@ export function reducer(state = initialState, action){
                     }
                 },
                 twodee: [
-                    ...state.twodee,
-                    state.twodee[coords[1]][coords[0]] = action.payload.room_id
+                    ...state.twodee
                 ]
             }
+            newState.twodee[coords[1]][coords[0]] = [action.payload.room_id, action.payload.exits]
+            return newState
         case UPDATE_FAILURE:
             return {
                 ...state,
