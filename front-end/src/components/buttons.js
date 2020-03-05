@@ -46,7 +46,7 @@ function Buttons(props) {
 
     const predictWest = (e) => {
         e.preventDefault()
-        props.move("w", predict)
+        props.moveSmarter("w", predict)
     }
 
     const mapUpdate = (e) => {

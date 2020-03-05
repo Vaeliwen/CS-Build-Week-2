@@ -10,6 +10,11 @@ const Player = (props) => {
         props.fetchLocation();
     }
 
+    let miner = "Nah"
+
+    if (props.status.has_mined == true) {
+        let miner = "Yup!"
+    }
     return (
         <div >
             <h2>{props.status.name}</h2>
@@ -20,6 +25,7 @@ const Player = (props) => {
             <p>Bodywear: {props.status.bodywear}</p>
             <p>Footwear: {props.status.footwear}</p>
             <p>Inventory: {props.status.inventory}</p>
+    <p>Has Mined?: {miner}</p>
             <div />
             <p>Location: {props.location.title} ID: {props.location.room_id}</p>
             <p>Description: {props.location.description}</p>

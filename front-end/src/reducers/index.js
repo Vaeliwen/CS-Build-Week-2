@@ -59,7 +59,8 @@ const initialState = {
         gold: 0,
         bodywear: "None",
         footwear: "None",
-        inventory: []
+        inventory: [],
+        has_mined: false
     },
 }
 
@@ -83,7 +84,8 @@ export function reducer(state = initialState, action){
                     exits: action.payload.exits,
                     items: action.payload.items,
                     players: action.payload.players,
-                    messages: action.payload.messages
+                    messages: action.payload.messages,
+                    has_mined: action.payload.has_mined
                 }
             }
         case FETCH_FAILURE:
